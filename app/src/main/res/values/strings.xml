@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Recipe + Pantry Tracker</string>
+    <string name="edit_message">Enter a recipe name</string>
+    <string name="button_send">Add Recipe</string>
+    <string name="button_viewrecipe">VIEW</string>
+    <string name="button_deleteIngredient">Delete</string>
+    <string name="pantryNav">Pantry</string>
+    <string name="shoppingNav">Edit Cart</string>
+    <string name="mainNav">Recipes</string>
+    <string name="button_expandRecipe">peek</string>
+    <string name="searchNav">Search</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_pantryExpand">Other Types</string>
+    <string name="nutritionButtonLoad">Get Nutrition</string>
+</resources>

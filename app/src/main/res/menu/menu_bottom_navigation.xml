@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent" android:layout_width="match_parent">
+
+    <item
+        android:id="@+id/nav_Home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/mainNav"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_shopping_list"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_add_shopping_cart_24"
+        android:title="@string/shoppingNav"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_pantry"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_ballot_24"
+        android:title="@string/pantryNav"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/searchNav"
+        app:showAsAction="ifRoom" />
+</menu>

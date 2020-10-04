@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/rt_Alcohol"
+        android:icon="@drawable/ic_iconmonstr_beer_3"
+        android:title="Alcohol" />
+    <item
+        android:id="@+id/rt_Desert"
+        android:icon="@drawable/ic_iconmonstr_candy_13"
+        android:title="Desert" />
+    <item
+        android:id="@+id/rt_Drink"
+        android:icon="@drawable/ic_iconmonstr_drink"
+        android:title="Beverage" />
+    <item
+        android:id="@+id/rt_Entree"
+        android:icon="@drawable/ic_iconmonstr_entree"
+        android:title="Entree" />
+    <item
+        android:id="@+id/rt_Side"
+        android:icon="@drawable/ic_iconmonstr_side"
+        android:title="Side" />
+    <item
+        android:id="@+id/rt_None"
+        android:icon="@drawable/ic_baseline_library_none"
+        android:title="None" />
+</menu>
