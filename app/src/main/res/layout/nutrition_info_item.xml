@@ -92,23 +92,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/LL_addFields"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/pantryOtherTypes"
-            android:minHeight="20dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_nutrition_info_basedOn">
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/text_nutrition_info_basedOn"
             android:layout_width="0dp"
@@ -126,6 +109,190 @@
             app:layout_constraintEnd_toStartOf="@+id/switch_scaleNutrition"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/pantryOtherTypes"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_nutrition_info_basedOn">
+
+            <TextView
+                android:id="@+id/text_nutrition_title_calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calories (kcal)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_calories"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_total_fat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total fat (g)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_totalFat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_calories" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_totalFat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_calories" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_cholesterol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cholesterol (mg)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_cholesterol"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_totalFat" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_cholesterol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_totalFat" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_sodium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sodium (mg)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_sodium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_cholesterol" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_sodium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_cholesterol" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_totalCarbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total carbs (g)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_totalCarbs"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/et_nutrition_info_totalCarbs" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_totalCarbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_sodium" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_sugars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sugars (g)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_sugars"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_totalCarbs" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_sugars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_totalCarbs" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_protein"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Protein (g)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_protein"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_sugars" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_protein"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_sugars" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_servingWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serving weight (g)"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_servingWeight"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/et_nutrition_info_servingWeight" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_servingWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_protein" />
+
+            <TextView
+                android:id="@+id/text_nutrition_title_servingSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serving size"
+                app:layout_constraintBottom_toBottomOf="@+id/et_nutrition_info_servingSize"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/et_nutrition_info_servingSize" />
+
+            <EditText
+                android:id="@+id/et_nutrition_info_servingSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_nutrition_info_servingWeight" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,268 +4,449 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.ViewHolderIng> {
-    public static DecimalFormat df = new DecimalFormat("#.00");
-    //final private MyClickListener mOnClickListener;
-    private ArrayList<Ingredient> mData;
+    public static DecimalFormat df = new DecimalFormat("0.00");
+
+    private static ArrayList<Ingredient> mData;
+    private static ArrayList<viewState> currentState = new ArrayList<>();
     private LayoutInflater mInflater;
     Context context;
+
+
     // data is passed into the constructor
     public NutritionAdapter(Context context, ArrayList<Ingredient> data) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
-        this.mData = data;
+        mData = data;
+        for (Ingredient ingredient : mData
+             ) {
+            currentState.add(new viewState());
+        }
        // this.mOnClickListener = listener;
     }
 
     // inflates the row layout from xml when needed
+    @NonNull
     @Override
-    public ViewHolderIng onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderIng onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.nutrition_info_item, parent, false);
-        ViewHolderIng holder = new ViewHolderIng(view);
 
-        return holder;
+        return new ViewHolderIng(view);
     }
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolderIng holder, final int position) {
+    public void onBindViewHolder(ViewHolderIng holder, int position) {
         Ingredient ingr = mData.get(position);
-
         holder.ingredientName.setText(ingr.getName());
-        holder.amtAndType.setText(ingr.getQuantity() + " " + ingr.getMeasurementType());
+        holder.amtAndType.setText(String.format("%s %s", ingr.getQuantity(), ingr.getMeasurementType()));
+
+        if(currentState.get(position).isExpanded) holder.nutrientHolder.setVisibility(View.VISIBLE);
+        else holder.nutrientHolder.setVisibility(View.GONE);
+
         if(ingr.getNutrition() == null) {
-            holder.resultSuccess.setText("Not Queried Yet");
+            holder.resultSuccess.setText(Nutrition.QueryResults.NOT_QUERIED.asString());
             return;
         }
-        holder.resultSuccess.setText(ingr.getNutrition().getQueryResults());
-        final Nutrition thisNut = ingr.getNutrition();
-        LinearLayout ll = (LinearLayout)holder.itemView.findViewById(R.id.LL_addFields);
-        if(holder.itemView.findViewWithTag("tag") != null) {
-            RefreshEditTexts(holder.myEditTexts, thisNut);
-            return;
-        }
+
+        holder.editNutrition.setTag(position);
+        holder.scaleAll.setTag(position);
+        holder.scaleAll.setChecked(currentState.get(position).isScaleAllChecked);
+
+        holder.resultSuccess.setText(ingr.getNutrition().getQueryResults().asString());
+        Nutrition thisNut = ingr.getNutrition();
+        
         String temp = "Nutrition based on " + df.format(ingr.getNutrition().nf_serving_size_qty) + " " + ingr.getNutrition().nf_serving_size_unit + " of "+ ingr.getNutrition().item_name;
-        holder.nutrtionBasedOn.setText(temp);
+        holder.nutritionBasedOn.setText(temp);
 
-        for (final Field f: thisNut.getClass().getDeclaredFields()) {
-            RelativeLayout relativeLayout = new RelativeLayout(context);
-            relativeLayout.setTag("tag");
-            relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT));
-            //relativeLayout.getLayoutParams().height = 25;
-            ll.addView(relativeLayout);
-            try {
-                if(f.get(thisNut) instanceof Double && f.get(thisNut) != null) {
-                    TextView tv = new TextView(context);
-                    tv.setText(f.getName());
-                    final EditText et = new EditText(context);
-                    holder.myEditTexts.add(et);
-                    et.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll,thisNut, f, holder.myEditTexts, et, position));
-                    et.setText(f.get(thisNut).toString());
-                    //LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    RelativeLayout.LayoutParams lpl = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                    lpl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    lpl.addRule(RelativeLayout.CENTER_VERTICAL);
-                    RelativeLayout.LayoutParams lpr = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lpr.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    lpr.addRule(RelativeLayout.CENTER_VERTICAL);
-                    tv.setLayoutParams(lpl);
-                    et.setLayoutParams(lpr);
-                    relativeLayout.addView(tv);
-                    relativeLayout.addView(et);
-
+        holder.et_calories.setText(df.format(thisNut.kcal_calories));
+        holder.et_calories.setTag(position);
+        holder.et_totalFat.setText(df.format(thisNut.g_total_fat));
+        holder.et_totalFat.setTag(position);
+        holder.et_cholesterol.setText(df.format(thisNut.mg_cholesterol));
+        holder.et_cholesterol.setTag(position);
+        holder.et_sodium.setText(df.format(thisNut.mg_sodium));
+        holder.et_sodium.setTag(position);
+        holder.et_totalCarbs.setText(df.format(thisNut.g_total_carbohydrate));
+        holder.et_totalCarbs.setTag(position);
+        holder.et_sugars.setText(df.format(thisNut.g_sugars));
+        holder.et_sugars.setTag(position);
+        holder.et_protein.setText(df.format(thisNut.g_protein));
+        holder.et_protein.setTag(position);
+        holder.et_servingWeight.setText(df.format(thisNut.g_serving_weight_grams));
+        holder.et_servingWeight.setTag(position);
+        holder.et_servingSize.setText(df.format(thisNut.nf_serving_size_qty));
+        holder.et_servingSize.setTag(position);
+        //if(!holder.areListenersAdded) {
+       /*     holder.etl_servingSize.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_servingSize, thisNut::setNf_serving_size_qty, position));
+            holder.etl_calories.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_calories, thisNut, thisNut::setKcal_calories, position));
+            holder.etl_totalFat.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_totalFat, thisNut, thisNut::setG_total_fat, position));
+            holder.etl_cholesterol.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_cholesterol, thisNut, thisNut::setMg_cholesterol, position));
+            holder.etl_sodium.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_sodium, thisNut, thisNut::setMg_sodium, position));
+            holder.etl_totalCarbs.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_totalCarbs, thisNut, thisNut::setG_total_carbohydrate, position));
+            holder.etl_sugars.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_sugars, thisNut, thisNut::setG_sugars, position));
+            holder.etl_protein.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_protein, thisNut, thisNut::setG_protein, position));
+            holder.etl_servingWeight.addTextChangedListener(new MyCustomEditTextListener(holder.scaleAll, holder.et_servingWeight, thisNut, thisNut::setG_serving_weight_grams, position));
+            holder.editNutrition.setOnClickListener(view -> {
+                if(!holder.isExpanded) {
+                    holder.isExpanded = true;
+                    holder.editNutrition.setText("hide");
+                    holder.nutrientHolder.setVisibility(View.VISIBLE);
+                } else {
+                    holder.isExpanded = false;
+                    holder.editNutrition.setText("edit");
+                    holder.nutrientHolder.setVisibility(View.GONE);
                 }
-            }
-            catch (IllegalStateException ise) {
-            }
-            // nope
-            catch (IllegalAccessException iae) {}
-        }
+            });
+            holder.scaleAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    holder.isScaleAllChecked = b; //so databind remembers
+                }
+            });
+            holder.areListenersAdded = true;*/
+        //}
     }
 
-    private void RefreshEditTexts(ArrayList<EditText> myEditTexts, Nutrition thisNut) {
-        int premadeFieldIndex = 0;
-        for (Field f : thisNut.getClass().getDeclaredFields()) {
-
-            try {
-                if (f.get(thisNut) instanceof Double && f.get(thisNut) != null) {
-                    myEditTexts.get(premadeFieldIndex).setText(f.get(thisNut).toString());
-                }
-            }
-            catch (IllegalStateException ise) {
-            }
-            // nope
-            catch (IllegalAccessException iae) {
-                //Skip private
-            }
-            premadeFieldIndex++;
-        }
-        return; //PREVENT DUPLICATIONS
-    }
-    private void RefreshEditTexts(ArrayList<EditText> myEditTexts, Nutrition thisNut, EditText exclude) {
-        int premadeFieldIndex = 0;
-        for (Field f : thisNut.getClass().getDeclaredFields()) {
-
-            try {
-                if(myEditTexts.get(premadeFieldIndex).equals(exclude)) continue;
-                if (f.get(thisNut) instanceof Double && f.get(thisNut) != null) {
-                    myEditTexts.get(premadeFieldIndex).setText(f.get(thisNut).toString());
-                }
-            }
-            catch (IllegalStateException ise) {
-            }
-            // nope
-            catch (IllegalAccessException iae) {
-                //Skip private
-            }
-            premadeFieldIndex++;
-        }
-        return; //PREVENT DUPLICATIONS
-    }
-
-    private void scaleAll(ArrayList<EditText> editTexts, EditText from, Nutrition nut, double multiplier) throws IllegalAccessException {
-
+    private void scaleAll(Nutrition nut, double multiplier, int position){
         nut.scaleNutrition(multiplier);
-        RefreshEditTexts(editTexts, nut, from);
+        notifyItemChanged(position);
+        //notifyDataSetChanged();
+        //RefreshEditTexts(editTexts, nut, from);
     };
+
     // total number of rows
     @Override
     public int getItemCount() {
         return mData.size();
     }
 
-    private class MyCustomEditTextListener implements TextWatcher {
-        private EditText from;
-        private int position;
-        private Switch scaleAll;
-        Nutrition nut;
-        Field thisField;
-        private ArrayList<EditText> editTexts;
-
-        MyCustomEditTextListener(Switch scaleAll, Nutrition thisNut, Field f, ArrayList<EditText> editTexts, EditText from, int position) {
-            this.scaleAll = scaleAll;
-            nut = thisNut;
-            thisField = f;
-            this.editTexts = editTexts;
-            this.from = from;
-            this.position = position;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            // no op
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            if(!from.hasFocus()) return; //stop setText from triggering loop
-            try {
-                if(editable.length() == 0) thisField.set(nut, 0.0);
-                else {
-
-                    try {
-                        Log.e("onFocusChance", "in here");
-                        Log.e("onFocusChance", "isChecked?:" +scaleAll.isChecked());
-                        Log.e("onFocusChance", "isAccess?:" +thisField.isAccessible());
-                        if(scaleAll.isChecked()) {
-                            if (thisField.get(nut).equals(from.getText().toString())) return; //do nothing if no change
-                                Double before = (Double) thisField.get(nut);
-                                Double differenceMultiplier = 1.0;
-                                if (before != 0.0)
-                                    differenceMultiplier = Double.parseDouble(from.getText().toString()) / before;
-                                scaleAll(editTexts, from, nut, differenceMultiplier);
-                                Log.e("onFocusChance", "scaleAllCalled");
-                        }
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    thisField.set(nut, Double.parseDouble(editable.toString()));
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
     // stores and recycles views as they are scrolled off screen
-    public static class ViewHolderIng extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolderIng extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView amtAndType;
         TextView ingredientName;
         TextView resultSuccess;
         Button editNutrition;
         View itemView;
         ConstraintLayout nutrientHolder;
-        ArrayList<EditText> myEditTexts = new ArrayList<>();
-        TextView nutrtionBasedOn;
+        TextView nutritionBasedOn;
         Switch scaleAll;
+        TextView calories;
+        TextView totalFat;
+        TextView cholesterol;
+        TextView sodium;
+        TextView totalCarbs;
+        TextView sugars;
+        TextView protein;
+        TextView servingWeight;
+        TextView servingSize;
+        EditText et_calories;
+        EditText et_totalFat;
+        EditText et_cholesterol;
+        EditText et_sodium;
+        EditText et_totalCarbs;
+        EditText et_sugars;
+        EditText et_protein;
+        EditText et_servingWeight;
+        EditText et_servingSize;
+
+
         ViewHolderIng(View itemView) {
             super(itemView);
             this.itemView = itemView;
             nutrientHolder = itemView.findViewById(R.id.layout_nutrition_details);
-            nutrientHolder.setVisibility(View.GONE);
+            //nutrientHolder.setVisibility(View.GONE);
             ingredientName = itemView.findViewById(R.id.text_nutrition_info_name);
             editNutrition = itemView.findViewById(R.id.button_nutrition_info_edit);
+            editNutrition.setOnClickListener(this);
             amtAndType = itemView.findViewById(R.id.text_nutrtition_info_qtyAndMeas);
             resultSuccess = itemView.findViewById(R.id.text_nutrition_info_result);
             editNutrition.setText("edit");
-            editNutrition.setOnClickListener(this);
-            nutrtionBasedOn = itemView.findViewById(R.id.text_nutrition_info_basedOn);
+            //editNutrition.setOnClickListener(this);
+            nutritionBasedOn = itemView.findViewById(R.id.text_nutrition_info_basedOn);
             scaleAll = itemView.findViewById(R.id.switch_scaleNutrition);
-            //add more listeners here
-        }
+            scaleAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                   if(scaleAll.getTag() != null) currentState.get((Integer) scaleAll.getTag()).isScaleAllChecked = b; //so databind remembers
+                }
+            });
+            calories = itemView.findViewById(R.id.text_nutrition_title_calories);
+            totalFat = itemView.findViewById(R.id.text_nutrition_title_total_fat);
+            cholesterol = itemView.findViewById(R.id.text_nutrition_title_cholesterol);
+            sodium = itemView.findViewById(R.id.text_nutrition_title_sodium);
+            totalCarbs = itemView.findViewById(R.id.text_nutrition_title_totalCarbs);
+            sugars = itemView.findViewById(R.id.text_nutrition_title_sugars);
+            protein = itemView.findViewById(R.id.text_nutrition_title_protein);
+            servingWeight = itemView.findViewById(R.id.text_nutrition_title_servingWeight);
+            servingSize = itemView.findViewById(R.id.text_nutrition_title_servingSize);
 
-        @Override
+            et_calories = itemView.findViewById(R.id.et_nutrition_info_calories);
+            et_calories.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_calories.getTag() != null) {
+                            afterTextChangedMethod(et_calories, beforeValue, mData.get((Integer) et_calories.getTag()).getNutrition()::setKcal_calories);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+
+            et_totalFat = itemView.findViewById(R.id.et_nutrition_info_totalFat);
+            et_totalFat.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_totalFat.getTag() != null) {
+                            afterTextChangedMethod(et_totalFat, beforeValue, mData.get((Integer) et_totalFat.getTag()).getNutrition()::setG_total_fat);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+
+            et_cholesterol = itemView.findViewById(R.id.et_nutrition_info_cholesterol);
+            et_cholesterol.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_cholesterol.getTag() != null) {
+                            afterTextChangedMethod(et_cholesterol, beforeValue, mData.get((Integer) et_cholesterol.getTag()).getNutrition()::setMg_cholesterol);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+
+            et_sodium = itemView.findViewById(R.id.et_nutrition_info_sodium);
+            et_sodium.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_sodium.getTag() != null) {
+                            afterTextChangedMethod(et_sodium, beforeValue, mData.get((Integer) et_sodium.getTag()).getNutrition()::setMg_sodium);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+            et_totalCarbs = itemView.findViewById(R.id.et_nutrition_info_totalCarbs);
+            et_totalCarbs.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_totalCarbs.getTag() != null) {
+                            afterTextChangedMethod(et_totalCarbs, beforeValue, mData.get((Integer) et_totalCarbs.getTag()).getNutrition()::setG_total_carbohydrate);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+            et_sugars = itemView.findViewById(R.id.et_nutrition_info_sugars);
+            et_sugars.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_sugars.getTag() != null) {
+                            afterTextChangedMethod(et_sugars, beforeValue, mData.get((Integer) et_sugars.getTag()).getNutrition()::setG_sugars);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+            et_protein = itemView.findViewById(R.id.et_nutrition_info_protein);
+            et_protein.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_protein.getTag() != null) {
+                            afterTextChangedMethod(et_protein, beforeValue, mData.get((Integer) et_protein.getTag()).getNutrition()::setG_protein);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+            et_servingWeight = itemView.findViewById(R.id.et_nutrition_info_servingWeight);
+            et_servingWeight.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_servingWeight.getTag() != null) {
+                            afterTextChangedMethod(et_servingWeight, beforeValue, mData.get((Integer) et_servingWeight.getTag()).getNutrition()::setG_serving_weight_grams);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+            et_servingSize = itemView.findViewById(R.id.et_nutrition_info_servingSize);
+            et_servingSize.addTextChangedListener(new TextWatcher() {
+                boolean ignoreRecursiveCalls = false;
+                String beforeValue;
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    beforeValue = charSequence.toString();
+                }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        if (et_servingSize.getTag() != null) {
+                            afterTextChangedMethod(et_servingSize, beforeValue, mData.get((Integer) et_servingSize.getTag()).getNutrition()::setNf_serving_size_qty);
+                        }
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                    }
+                }
+            });
+
+        }
+        private void afterTextChangedMethod(EditText et, String beforeValue, Nutrition.command setter){
+                if (!et.hasFocus()) return; //stop setText from triggering loop
+                if (scaleAll.isChecked()) {
+                    if (beforeValue.equals(et.getText().toString())) {
+                        return; //do nothing if no change
+                    }
+                    double before = Double.parseDouble(beforeValue);
+                    double differenceMultiplier = 1.0;
+                    if (before != 0.0)
+                        differenceMultiplier = Double.parseDouble(et.getText().toString()) / before;
+                    if (differenceMultiplier > 0.00001 && differenceMultiplier != 1.0) {
+                        //mData.get((Integer) et_calories.getTag()).getNutrition().setKcal_calories(before); //revert to original value and then scale all values
+                        scaleAll(mData.get((Integer) et.getTag()).getNutrition(), differenceMultiplier, (Integer) et.getTag());
+                    }
+                } else
+                  setter.set(Double.parseDouble(et.getText().toString()));
+        }
+       @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.button_nutrition_info_edit:
-                    //if (listener != null) {
-                        //listener.deleteIngredient(this.getLayoutPosition());
-                   // }
-                    if(editNutrition.getText().equals("edit")) {
-                        editNutrition.setText("hide");
-                        nutrientHolder.setVisibility(View.VISIBLE);
-                    } else {
-                        editNutrition.setText("edit");
-                        nutrientHolder.setVisibility(View.GONE);
+                    if(view.getTag() != null) {
+                        int pos = (int) view.getTag();
+                        if (!currentState.get(pos).isExpanded) {
+                            currentState.get(pos).isExpanded = true;
+                            editNutrition.setText("hide");
+                            nutrientHolder.setVisibility(View.VISIBLE);
+                        } else {
+                            currentState.get(pos).isExpanded = false;
+                            editNutrition.setText("edit");
+                            nutrientHolder.setVisibility(View.GONE);
+                        }
                     }
                     break;
                 default:
                     break;
             }
+
         }
     }
+    private class viewState{
+        public boolean isExpanded = false;
+        public boolean isScaleAllChecked = false;
+        viewState(){
 
+        }
+    }
     // convenience method for getting data at click position
     Ingredient getItem(int id) {
         return mData.get(id);

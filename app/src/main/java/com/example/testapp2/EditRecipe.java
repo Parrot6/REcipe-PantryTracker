@@ -199,7 +199,7 @@ public class EditRecipe extends AppCompatActivity implements AdapterView.OnItemS
                         }*/
                     }
                     getNutrition.setText("Back To Recipe");
-                    ing.setNutrition(query.getNutrition());
+                    ing.setNutrition(query.getBestResult());
                     if(totalNutritionSoFar == null) totalNutritionSoFar = Nutrition.newNutrition(ing.getNutrition());
                     else totalNutritionSoFar.getCombined(ing.getNutrition());
                 }

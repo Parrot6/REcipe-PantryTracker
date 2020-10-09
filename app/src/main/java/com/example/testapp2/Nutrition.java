@@ -20,14 +20,38 @@ public class Nutrition implements Serializable {
       sb.append(name + ": " + df2.format(Double.parseDouble(f.get(o).toString())) + " " + measure + "\n");
       return sb.toString();
     };
-    public static String getFormatted(Double d) throws IllegalAccessException {
-        DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(d);
+    public static String getFormatted(String fieldName) throws IllegalAccessException {
+        String[] parts = fieldName.split("_",2);
+        parts[0].replace("_"," ");
+        StringBuilder sb = new StringBuilder();
+        sb.append(parts[1].substring(0,1).toUpperCase());
+        sb.append(parts[1].substring(1) + " ("+parts[0]+")");
+        return sb.toString();
     };
+
+    public enum QueryResults {
+        NOT_QUERIED {
+            public String asString(){
+            return "Not Queried";
+        }}, NO_CONVERSION {
+            @Override
+            public String asString() {
+                return "No Conversion";
+            }
+        }, SUCCESS {
+            @Override
+            public String asString() {
+                return "Success";
+            }
+        };
+
+
+        public abstract String asString();
+        }
 
     private int combinedCount = 1;
     public String nf_ingredient_statement;
-    private String queryResults = "Not Queried";
+    private QueryResults queryResults = QueryResults.NOT_QUERIED;
     public Double kcal_calories;
     public Double g_total_fat;
     public Double mg_cholesterol; //mg
@@ -45,6 +69,99 @@ public class Nutrition implements Serializable {
     public Double nf_vitamin_c_dv = null;
     public Double nf_calcium_dv = null;
     public Double nf_iron_dv = null;
+
+    public void setKcal_calories(Double kcal_calories) {
+        this.kcal_calories = kcal_calories;
+    }
+
+    public void setG_total_fat(Double g_total_fat) {
+        this.g_total_fat = g_total_fat;
+    }
+
+    public void setMg_cholesterol(Double mg_cholesterol) {
+        this.mg_cholesterol = mg_cholesterol;
+    }
+
+    public void setMg_sodium(Double mg_sodium) {
+        this.mg_sodium = mg_sodium;
+    }
+
+    public void setG_total_carbohydrate(Double g_total_carbohydrate) {
+        this.g_total_carbohydrate = g_total_carbohydrate;
+    }
+
+    public void setNf_dietary_fiber(Double nf_dietary_fiber) {
+        this.nf_dietary_fiber = nf_dietary_fiber;
+    }
+
+    public void setG_sugars(Double g_sugars) {
+        this.g_sugars = g_sugars;
+    }
+
+    public void setG_protein(Double g_protein) {
+        this.g_protein = g_protein;
+    }
+
+    public void setNf_calories_from_fat(Double nf_calories_from_fat) {
+        this.nf_calories_from_fat = nf_calories_from_fat;
+    }
+
+    public void setNf_saturated_fat(Double nf_saturated_fat) {
+        this.nf_saturated_fat = nf_saturated_fat;
+    }
+
+    public void setNf_monounsaturated_fat(Double nf_monounsaturated_fat) {
+        this.nf_monounsaturated_fat = nf_monounsaturated_fat;
+    }
+
+    public void setNf_polyunsaturated_fat(Double nf_polyunsaturated_fat) {
+        this.nf_polyunsaturated_fat = nf_polyunsaturated_fat;
+    }
+
+    public void setNf_trans_fatty_acid(Double nf_trans_fatty_acid) {
+        this.nf_trans_fatty_acid = nf_trans_fatty_acid;
+    }
+
+    public void setNf_vitamin_a_dv(Double nf_vitamin_a_dv) {
+        this.nf_vitamin_a_dv = nf_vitamin_a_dv;
+    }
+
+    public void setNf_vitamin_c_dv(Double nf_vitamin_c_dv) {
+        this.nf_vitamin_c_dv = nf_vitamin_c_dv;
+    }
+
+    public void setNf_calcium_dv(Double nf_calcium_dv) {
+        this.nf_calcium_dv = nf_calcium_dv;
+    }
+
+    public void setNf_iron_dv(Double nf_iron_dv) {
+        this.nf_iron_dv = nf_iron_dv;
+    }
+
+    public void setNf_potassium(Double nf_potassium) {
+        this.nf_potassium = nf_potassium;
+    }
+
+    public void setNf_servings_per_container(Double nf_servings_per_container) {
+        this.nf_servings_per_container = nf_servings_per_container;
+    }
+
+    public void setNf_serving_size_qty(Double nf_serving_size_qty) {
+        this.nf_serving_size_qty = nf_serving_size_qty;
+    }
+
+    public void setNf_serving_size_unit(String nf_serving_size_unit) {
+        this.nf_serving_size_unit = nf_serving_size_unit;
+    }
+
+    public void setG_serving_weight_grams(Double g_serving_weight_grams) {
+        this.g_serving_weight_grams = g_serving_weight_grams;
+    }
+
+    public void setMetric_qty(Double metric_qty) {
+        this.metric_qty = metric_qty;
+    }
+
     public Double nf_potassium = null;
     public Double nf_servings_per_container;
     public Double nf_serving_size_qty;
@@ -91,7 +208,7 @@ public class Nutrition implements Serializable {
         if(nf_serving_size_unit.toLowerCase().contains( ing.getMeasurementType().toLowerCase())){
             double mult = ing.getQuantity()/nf_serving_size_qty;
             Log.e("EqualMeasureTypes", nf_serving_size_unit + "&" +ing.getMeasurementType() +" scale: " + String.valueOf(mult));
-            queryResults = "Success";
+            queryResults = QueryResults.SUCCESS;
             scaleNutrition(mult);
         } else {
             Log.e("NotEqualMeasureTypes", ing.getMeasurementType() + " vs " + nf_serving_size_unit);
@@ -108,7 +225,7 @@ public class Nutrition implements Serializable {
                         Double multi = unc.getConversionMulti(nf_serving_size_unit);
                         //multi = multi/nf_serving_size_qty;
                         Double finalMulti = (ing.getQuantity()/nf_serving_size_qty)*multi;
-                        queryResults = "Success";
+                        queryResults = QueryResults.SUCCESS;
                         Log.e("found matching conv",ing.getQuantity()+ing.getMeasurementType() + " to " +nf_serving_size_qty+ nf_serving_size_unit + " " + finalMulti);
                         scaleNutrition(finalMulti);
                         nf_serving_size_unit = ing.getMeasurementType();
@@ -117,11 +234,11 @@ public class Nutrition implements Serializable {
                     break;
                 }
             }
-            if(!found) queryResults = "No conversion";
+            if(!found) queryResults = QueryResults.NO_CONVERSION;
             if(!found) Log.e("No conversion available", ing.getMeasurementType() + " vs " + nf_serving_size_unit);
         }
     }
-    public String getQueryResults(){
+    public QueryResults getQueryResults(){
         return queryResults;
     }
     public Nutrition scaleNutrition(double amt){
@@ -130,7 +247,7 @@ public class Nutrition implements Serializable {
                 if(f.get(this) instanceof Double){
 
                     Double temp = (Double) f.get(this);
-                    Log.e("scaling", f.getName() + ":" + String.valueOf(temp) + " to " + temp*amt);
+                    //Log.e("scaling", f.getName() + ":" + String.valueOf(temp) + " to " + temp*amt);
                     f.set(this, temp*amt);
                 }
             }
@@ -181,6 +298,9 @@ public class Nutrition implements Serializable {
             catch (IllegalAccessException iae) {}
         }
         return result.toString();
+    }
+    interface command{
+        public void set(Double d);
     }
 }
 

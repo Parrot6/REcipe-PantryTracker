@@ -5,12 +5,14 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NavUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -24,14 +26,24 @@ public class NutritionQuery {
     private static final String USDA_API_KEY = "U0r6uOGQDq4xfdUQ565RKsgGSfQfhmyPjuQFFQxy";
     private static final String Nutritionix_API_KEY = "7a33fb023dmsh26f191c59816e64p1168dfjsn5e1e67646390";
     private static final String Nutritionix_API_URL = "nutritionix-api.p.rapidapi.com";
-    Nutrition lastQuery;
+    ArrayList<Nutrition> lastQuery = new ArrayList<>();
+    int saveXqueries = 3;
     Boolean finished;
     Ingredient ing;
     public boolean isFinished(){
         return finished;
     }
-    public Nutrition getNutrition(){
+    public ArrayList<Nutrition> getNutrition(){
         return lastQuery;
+    }
+
+    //check if any have successful conversion
+    public Nutrition getBestResult(){
+        for (Nutrition nut :
+                lastQuery) {
+            if(nut.getQueryResults() == Nutrition.QueryResults.SUCCESS) return nut;
+        }
+        return lastQuery.get(0);
     }
     public NutritionQuery(Ingredient ingredient){
         finished = false;
@@ -110,10 +122,11 @@ public class NutritionQuery {
 
                 JSONObject json = new JSONObject(s);
                 JSONArray jsonArray = json.getJSONArray("hits");
-                JSONObject jsonObject = jsonArray.getJSONObject(0); // top result
-
-                JSONObject fields = jsonObject.getJSONObject("fields");
-                lastQuery = new Nutrition(fields, ing);
+                for(int i = 0; i < saveXqueries; i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i); // top result
+                    JSONObject fields = jsonObject.getJSONObject("fields");
+                    lastQuery.add(new Nutrition(fields, ing));
+                }
                 finished = true;
 
                 return s;

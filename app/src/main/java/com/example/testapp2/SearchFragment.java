@@ -97,8 +97,8 @@ public class SearchFragment extends Fragment {
                 while(!nq.isFinished()){
 
                 }
-                searchResults.setText(nq.getNutrition().toString());
-                searchResults.setText(nq.getNutrition().toStringVar());
+                searchResults.setText(nq.getBestResult().toString());
+                searchResults.setText(nq.getBestResult().toStringVar());
             }
         });
 

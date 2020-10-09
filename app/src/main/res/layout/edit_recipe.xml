@@ -202,6 +202,15 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollview">
 
         <TextView
+            android:id="@+id/text_edit_text_RecipeNutritionSummary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <TextView
             android:id="@+id/text_edit_text__NutritionTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
