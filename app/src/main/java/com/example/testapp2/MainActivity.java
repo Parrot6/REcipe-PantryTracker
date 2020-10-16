@@ -42,8 +42,6 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity{
 
-    private static final String API_URL = "https://reqres.in/api/users/2";
-    private static final String USDA_API_KEY = "U0r6uOGQDq4xfdUQ565RKsgGSfQfhmyPjuQFFQxy";
     BottomNavigationView bottomNavigationView;
 
     static ArrayList<CartItem> currentCart = new ArrayList<>();
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
     Context context;
     //Fragments
     public static Recipe.RecipeType CURRENT_SORT = Recipe.RecipeType.NONE;
-    private static final String[] types = {"tsp","tbsp","fl oz","cup","Other Value","fl pt","ft qt","gal","mL","L"};
+    private static final String[] types = {"tsp","tbsp","fl oz","cup","g","Other Value","fl pt","ft qt","gal","mL","L"};
     private static String[] quantities = {"1","2","3","4","Other Value"};
     private String fileName = "pantryTest21";
     public static ArrayList<UnitConversion> conversions = new ArrayList<>();
@@ -64,63 +62,11 @@ public class MainActivity extends AppCompatActivity{
 
         readFile(context, true);
 
-        UnitConversion tbsp = new UnitConversion(1.0,"tablespoon").addVariantNames(new ArrayList<String>(Arrays.asList("tbsp","tbsp.","tblspn","tbsp.")));
-        UnitConversion tspn = new UnitConversion(1.0,"teaspoon").addVariantNames(new ArrayList<String>(Arrays.asList("tspn","tspn.","tsp","tsp.")));
-        UnitConversion cup = new UnitConversion(1.0,"cup").addVariantNames(new ArrayList<String>(Arrays.asList("cup.")));
-        UnitConversion pint = new UnitConversion(1.0,"pint").addVariantNames(new ArrayList<String>(Arrays.asList("pint.","pt")));
-        UnitConversion quart = new UnitConversion(1.0,"quart").addVariantNames(new ArrayList<String>(Arrays.asList("quart.","qt")));
-        UnitConversion gal = new UnitConversion(1.0,"gallon").addVariantNames(new ArrayList<String>(Arrays.asList("gal.","gal","gall")));
-        UnitConversion L = new UnitConversion(1.0,"Liter").addVariantNames(new ArrayList<String>(Arrays.asList("L.","L","lit.")));
-        UnitConversion mL = new UnitConversion(1.0,"mL").addVariantNames(new ArrayList<String>(Arrays.asList("mL.","milliLiter")));
-        UnitConversion ounce = new UnitConversion(1.0, "ounce").addVariantNames(new ArrayList<String>(Arrays.asList("oz.","oz")));
-        UnitConversion fluidounce = new UnitConversion(1.0, "fluid ounce").addVariantNames(new ArrayList<String>(Arrays.asList("fl oz.","fl oz")));
-        UnitConversion pound = new UnitConversion(1.0, "pound").addVariantNames(new ArrayList<String>(Arrays.asList("lb.","lb")));
-        UnitConversion gram = new UnitConversion(1.0, "gram").addVariantNames(new ArrayList<String>(Arrays.asList("g","g.")));
-        UnitConversion dash = new UnitConversion(1.0, "dash");
-        dash.addEquivUnitConversion(new UnitConversion(1.0/8.0, tspn)).addEquivUnitConversion(new UnitConversion(1.0/24.0, tbsp));
-        fluidounce.addEquivUnitConversion(new UnitConversion(30.0, mL)).addEquivUnitConversion(new UnitConversion(.125, cup));
-        ounce.addEquivUnitConversion(new UnitConversion(28.0, gram));
-        tspn.addEquivUnitConversion(new UnitConversion(5.0, mL)).addEquivUnitConversion(new UnitConversion(.005, L)).addEquivUnitConversion(new UnitConversion(3.0, tbsp));
-        tspn.addEquivUnitConversion(new UnitConversion(8.0, dash));
-        pound.addEquivUnitConversion(new UnitConversion(113.0*4, gram));
-        tbsp.addEquivUnitConversion(new UnitConversion(3.0, tspn)).addEquivUnitConversion(new UnitConversion(15.0, mL)).addEquivUnitConversion(new UnitConversion(.015, L));
-        tbsp.addEquivUnitConversion(new UnitConversion(1.0/16.0, cup)).addEquivUnitConversion(new UnitConversion(240.0, mL)).addEquivUnitConversion(new UnitConversion(.24,L));
-        tbsp.addEquivUnitConversion(new UnitConversion(24.0, dash));
-        L.addEquivUnitConversion(new UnitConversion(1000.0, mL));
-        cup.addEquivUnitConversion(new UnitConversion(250.0, mL)).addEquivUnitConversion(new UnitConversion(.25, L)).addEquivUnitConversion(new UnitConversion(16.0, tbsp));
-        pint.addEquivUnitConversion(new UnitConversion(500.0, mL)).addEquivUnitConversion(new UnitConversion(.5, L));;
-        quart.addEquivUnitConversion(new UnitConversion(.95, L)).addEquivUnitConversion(new UnitConversion(950.0, mL));;
-        gal.addEquivUnitConversion(new UnitConversion(3.8, L)).addEquivUnitConversion(new UnitConversion(3800.0, mL));
-        conversions.addAll(new ArrayList<UnitConversion>(Arrays.asList(tspn,cup,pint,quart,gal,L,mL,ounce,fluidounce,pound,gram)));
+        initializeConversions();
 
         if(recipes.size() == 0) {
             //examples of data
-            Ingredient ingred1 = new Ingredient("Chicken", 10, "oz");
-            Ingredient ingred2 = new Ingredient("Turkey", 10, "oz");
-            Ingredient ingred3 = new Ingredient("Chicken", 2, "lb");
-            Ingredient ingred4 = new Ingredient("Milk", 10, "cup");
-            Ingredient ingred5 = new Ingredient("Milk", 6, "fl oz");
-            Ingredient ingred6 = new Ingredient("Parmesan", 2, "cup");
-            Ingredient ingred7 = new Ingredient("Parmesan", 100, "g");
-            Ingredient ingred8 = new Ingredient("Salt", 10, "tsp");
-            Ingredient ingred9 = new Ingredient("Pepper", 10, "tsp");
-            Ingredient pasta = new Ingredient("Pasta", 12, "oz");
-            Ingredient sauce = new Ingredient("Tomato Sauce", 8, "oz");
-            Ingredient grbe = new Ingredient("Green Beans", 12, "oz");
-            Ingredient bull = new Ingredient("Bullion Cube", 1, "cube");
-            ArrayList<Ingredient> ingredients1 = new ArrayList<>(Arrays.asList(ingred1, ingred2, ingred3, ingred4, ingred5));
-            ArrayList<Ingredient> ingredients2 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred7, ingred5, ingred6));
-            ArrayList<Ingredient> ingredients3 = new ArrayList<>(Arrays.asList(ingred4, ingred5, ingred6, ingred7, ingred8));
-            ArrayList<Ingredient> ingredients4 = new ArrayList<>(Arrays.asList(ingred5, ingred2, ingred6, ingred7, ingred9));
-            ArrayList<Ingredient> ingredients5 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred5, ingred7, ingred9));
-            ArrayList<Ingredient> spag = new ArrayList<>(Arrays.asList(pasta, sauce));
-            ArrayList<Ingredient> gb = new ArrayList<>(Arrays.asList(grbe, bull));
-            addRecipe(0, new Recipe("Alfredo", ingredients1), 1);
-            addRecipe(0, new Recipe("Pulled Pork", ingredients2), 2);
-            addRecipe(0, new Recipe("Sweet and Sour Chicken", ingredients3), 3);
-            addRecipe(0, new Recipe("Spaghetti", spag), 4);
-            addRecipe(0, new Recipe("Green Beans", gb), 4);
-            makeSummaryRecipeIngredients();
+            initializeExamplesOfData();
         }
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -152,34 +98,69 @@ public class MainActivity extends AppCompatActivity{
 
 
     }
-    public class OkHttpHandler extends AsyncTask {
 
-        OkHttpClient client = new OkHttpClient();
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            Request.Builder builder = new Request.Builder();
-	                builder.url("https://api.nal.usda.gov/fdc/v1/?limit=1&api_key="+USDA_API_KEY)
-                    .get();
-                    //.addHeader("x-rapidapi-host", "the-cocktail-db.p.rapidapi.com");
-                    //.addHeader("X-Api-Key", USDA_API_KEY);
-            Request request = builder.build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                String s;
-                if (response.body() == null) throw new AssertionError();
-                s = response.body().string();
-                Log.e("API CALL", s);
-                return s;
-
-            }catch (Exception e){
-                Log.e("API CALL", "EXCEPTION");
-                e.printStackTrace();
-            }
-            return null;
-        }
+    private void initializeExamplesOfData() {
+        Ingredient ingred1 = new Ingredient("Chicken", 10, "oz");
+        Ingredient ingred2 = new Ingredient("Turkey", 10, "oz");
+        Ingredient ingred3 = new Ingredient("Chicken", 2, "lb");
+        Ingredient ingred4 = new Ingredient("Milk", 10, "cup");
+        Ingredient ingred5 = new Ingredient("Milk", 6, "fl oz");
+        Ingredient ingred6 = new Ingredient("Parmesan", 2, "cup");
+        Ingredient ingred7 = new Ingredient("Parmesan", 100, "g");
+        Ingredient ingred8 = new Ingredient("Salt", 10, "tsp");
+        Ingredient ingred9 = new Ingredient("Pepper", 10, "tsp");
+        Ingredient pasta = new Ingredient("Pasta", 12, "oz");
+        Ingredient sauce = new Ingredient("Tomato Sauce", 8, "oz");
+        Ingredient grbe = new Ingredient("Green Beans", 12, "oz");
+        Ingredient bull = new Ingredient("Bullion Cube", 1, "cube");
+        ArrayList<Ingredient> ingredients1 = new ArrayList<>(Arrays.asList(ingred1, ingred2, ingred3, ingred4, ingred5));
+        ArrayList<Ingredient> ingredients2 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred7, ingred5, ingred6));
+        ArrayList<Ingredient> ingredients3 = new ArrayList<>(Arrays.asList(ingred4, ingred5, ingred6, ingred7, ingred8));
+        ArrayList<Ingredient> ingredients4 = new ArrayList<>(Arrays.asList(ingred5, ingred2, ingred6, ingred7, ingred9));
+        ArrayList<Ingredient> ingredients5 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred5, ingred7, ingred9));
+        ArrayList<Ingredient> spag = new ArrayList<>(Arrays.asList(pasta, sauce));
+        ArrayList<Ingredient> gb = new ArrayList<>(Arrays.asList(grbe, bull));
+        addRecipe(0, new Recipe("Alfredo", ingredients1), 1);
+        addRecipe(0, new Recipe("Pulled Pork", ingredients2), 2);
+        addRecipe(0, new Recipe("Sweet and Sour Chicken", ingredients3), 3);
+        addRecipe(0, new Recipe("Spaghetti", spag), 4);
+        addRecipe(0, new Recipe("Green Beans", gb), 4);
+        makeSummaryRecipeIngredients();
     }
+
+    private void initializeConversions() {
+        UnitConversion tbsp = new UnitConversion(1.0,"tablespoon").addVariantNames(new ArrayList<String>(Arrays.asList("tbsp","tbsp.","tblspn","tbsp.")));
+        UnitConversion tspn = new UnitConversion(1.0,"teaspoon").addVariantNames(new ArrayList<String>(Arrays.asList("tspn","tspn.","tsp","tsp.")));
+        UnitConversion cup = new UnitConversion(1.0,"cup").addVariantNames(new ArrayList<String>(Arrays.asList("cup.")));
+        UnitConversion pint = new UnitConversion(1.0,"pint").addVariantNames(new ArrayList<String>(Arrays.asList("pint.","pt")));
+        UnitConversion quart = new UnitConversion(1.0,"quart").addVariantNames(new ArrayList<String>(Arrays.asList("quart.","qt")));
+        UnitConversion gal = new UnitConversion(1.0,"gallon").addVariantNames(new ArrayList<String>(Arrays.asList("gal.","gal","gall")));
+        UnitConversion L = new UnitConversion(1.0,"Liter").addVariantNames(new ArrayList<String>(Arrays.asList("L.","L","lit.")));
+        UnitConversion mL = new UnitConversion(1.0,"mL").addVariantNames(new ArrayList<String>(Arrays.asList("mL.","milliLiter")));
+        UnitConversion ounce = new UnitConversion(1.0, "ounce").addVariantNames(new ArrayList<String>(Arrays.asList("oz.","oz")));
+        UnitConversion fluidounce = new UnitConversion(1.0, "fluid ounce").addVariantNames(new ArrayList<String>(Arrays.asList("fl oz.","fl oz")));
+        UnitConversion pound = new UnitConversion(1.0, "pound").addVariantNames(new ArrayList<String>(Arrays.asList("lb.","lb")));
+        UnitConversion gram = new UnitConversion(1.0, "gram").addVariantNames(new ArrayList<String>(Arrays.asList("g","g.")));
+        UnitConversion dash = new UnitConversion(1.0, "dash");
+        dash.addEquivUnitConversion(new UnitConversion(1.0/8.0, tspn)).addEquivUnitConversion(new UnitConversion(1.0/24.0, tbsp));
+        fluidounce.addEquivUnitConversion(new UnitConversion(30.0, mL)).addEquivUnitConversion(new UnitConversion(.125, cup));
+        ounce.addEquivUnitConversion(new UnitConversion(28.0, gram));
+        tspn.addEquivUnitConversion(new UnitConversion(5.0, mL)).addEquivUnitConversion(new UnitConversion(.005, L)).addEquivUnitConversion(new UnitConversion(3.0, tbsp));
+        tspn.addEquivUnitConversion(new UnitConversion(8.0, dash));
+        pound.addEquivUnitConversion(new UnitConversion(113.0*4, gram));
+        tbsp.addEquivUnitConversion(new UnitConversion(3.0, tspn)).addEquivUnitConversion(new UnitConversion(15.0, mL)).addEquivUnitConversion(new UnitConversion(.015, L));
+        tbsp.addEquivUnitConversion(new UnitConversion(1.0/16.0, cup)).addEquivUnitConversion(new UnitConversion(240.0, mL)).addEquivUnitConversion(new UnitConversion(.24,L));
+        tbsp.addEquivUnitConversion(new UnitConversion(24.0, dash));
+        L.addEquivUnitConversion(new UnitConversion(1000.0, mL));
+        cup.addEquivUnitConversion(new UnitConversion(250.0, mL)).addEquivUnitConversion(new UnitConversion(.25, L)).addEquivUnitConversion(new UnitConversion(16.0, tbsp));
+        pint.addEquivUnitConversion(new UnitConversion(500.0, mL)).addEquivUnitConversion(new UnitConversion(.5, L));
+        ;
+        quart.addEquivUnitConversion(new UnitConversion(.95, L)).addEquivUnitConversion(new UnitConversion(950.0, mL));
+        ;
+        gal.addEquivUnitConversion(new UnitConversion(3.8, L)).addEquivUnitConversion(new UnitConversion(3800.0, mL));
+        conversions.addAll(new ArrayList<UnitConversion>(Arrays.asList(tspn,cup,pint,quart,gal,L,mL,ounce,fluidounce,pound,gram)));
+    }
+
     private static void makeSummaryRecipeIngredients() {
         ArrayList<SameNameIngredients> ingredientSummary = new ArrayList<>();
         //add pantry from file
