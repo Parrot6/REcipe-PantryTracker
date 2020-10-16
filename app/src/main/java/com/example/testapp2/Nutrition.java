@@ -45,7 +45,6 @@ public class Nutrition implements Serializable {
             }
         };
 
-
         public abstract String asString();
         }
 
@@ -210,9 +209,14 @@ public class Nutrition implements Serializable {
             Log.e("EqualMeasureTypes", nf_serving_size_unit + "&" +ing.getMeasurementType() +" scale: " + String.valueOf(mult));
             queryResults = QueryResults.SUCCESS;
             scaleNutrition(mult);
-        } else {
+        } else if(ing.getMeasurementType().toLowerCase().equals("g")) {
+            double mult = ing.getQuantity()/g_serving_weight_grams;
+            queryResults = QueryResults.SUCCESS;
+            scaleNutrition(mult);
+        } else
+            {
             Log.e("NotEqualMeasureTypes", ing.getMeasurementType() + " vs " + nf_serving_size_unit);
-            Boolean found = false;
+            boolean found = false;
 
             for (UnitConversion unc :
                     MainActivity.conversions) {
@@ -230,9 +234,27 @@ public class Nutrition implements Serializable {
                         scaleNutrition(finalMulti);
                         nf_serving_size_unit = ing.getMeasurementType();
                         nf_serving_size_qty = ing.getQuantity();
+                        break;
                     }
-                    break;
                 }
+                if(unc.hasConversion(ing.getMeasurementType())){
+                    Log.e("Found secondary FIRST", nf_serving_size_qty + " "+ nf_serving_size_unit);
+
+                    if(unc.hasNameMatch(nf_serving_size_unit)){
+                        Log.e("Found first type 2ND", nf_serving_size_qty + " "+ nf_serving_size_unit);
+                        found = true;
+                        Double multi = unc.getConversionMulti(ing.getMeasurementType());
+                        //multi = multi/nf_serving_size_qty;
+                        Double finalMulti = (nf_serving_size_qty/ing.getQuantity())*multi;
+                        queryResults = QueryResults.SUCCESS;
+                        Log.e("found matching conv",+nf_serving_size_qty+ nf_serving_size_unit  + " to "  + ing.getQuantity()+ing.getMeasurementType() + " " + finalMulti);
+                        scaleNutrition(finalMulti);
+                        nf_serving_size_unit = ing.getMeasurementType();
+                        nf_serving_size_qty = ing.getQuantity();
+                        break;
+                    }
+                }
+
             }
             if(!found) queryResults = QueryResults.NO_CONVERSION;
             if(!found) Log.e("No conversion available", ing.getMeasurementType() + " vs " + nf_serving_size_unit);

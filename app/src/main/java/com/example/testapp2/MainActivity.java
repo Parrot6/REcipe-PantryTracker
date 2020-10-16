@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity{
     public static Recipe.RecipeType CURRENT_SORT = Recipe.RecipeType.NONE;
     private static final String[] types = {"tsp","tbsp","fl oz","cup","Other Value","fl pt","ft qt","gal","mL","L"};
     private static String[] quantities = {"1","2","3","4","Other Value"};
-    private String fileName = "pantryTest19";
+    private String fileName = "pantryTest21";
     public static ArrayList<UnitConversion> conversions = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +63,8 @@ public class MainActivity extends AppCompatActivity{
         context = this;
 
         readFile(context, true);
-            //OkHTTP
-     //   OkHttpHandler okHttpHandler= new OkHttpHandler();
-    //   okHttpHandler.execute(API_URL);
 
         UnitConversion tbsp = new UnitConversion(1.0,"tablespoon").addVariantNames(new ArrayList<String>(Arrays.asList("tbsp","tbsp.","tblspn","tbsp.")));
-        ;
         UnitConversion tspn = new UnitConversion(1.0,"teaspoon").addVariantNames(new ArrayList<String>(Arrays.asList("tspn","tspn.","tsp","tsp.")));
         UnitConversion cup = new UnitConversion(1.0,"cup").addVariantNames(new ArrayList<String>(Arrays.asList("cup.")));
         UnitConversion pint = new UnitConversion(1.0,"pint").addVariantNames(new ArrayList<String>(Arrays.asList("pint.","pt")));
@@ -96,6 +92,7 @@ public class MainActivity extends AppCompatActivity{
         quart.addEquivUnitConversion(new UnitConversion(.95, L)).addEquivUnitConversion(new UnitConversion(950.0, mL));;
         gal.addEquivUnitConversion(new UnitConversion(3.8, L)).addEquivUnitConversion(new UnitConversion(3800.0, mL));
         conversions.addAll(new ArrayList<UnitConversion>(Arrays.asList(tspn,cup,pint,quart,gal,L,mL,ounce,fluidounce,pound,gram)));
+
         if(recipes.size() == 0) {
             //examples of data
             Ingredient ingred1 = new Ingredient("Chicken", 10, "oz");
@@ -107,17 +104,22 @@ public class MainActivity extends AppCompatActivity{
             Ingredient ingred7 = new Ingredient("Parmesan", 100, "g");
             Ingredient ingred8 = new Ingredient("Salt", 10, "tsp");
             Ingredient ingred9 = new Ingredient("Pepper", 10, "tsp");
+            Ingredient pasta = new Ingredient("Pasta", 12, "oz");
+            Ingredient sauce = new Ingredient("Tomato Sauce", 8, "oz");
+            Ingredient grbe = new Ingredient("Green Beans", 12, "oz");
+            Ingredient bull = new Ingredient("Bullion Cube", 1, "cube");
             ArrayList<Ingredient> ingredients1 = new ArrayList<>(Arrays.asList(ingred1, ingred2, ingred3, ingred4, ingred5));
             ArrayList<Ingredient> ingredients2 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred7, ingred5, ingred6));
             ArrayList<Ingredient> ingredients3 = new ArrayList<>(Arrays.asList(ingred4, ingred5, ingred6, ingred7, ingred8));
             ArrayList<Ingredient> ingredients4 = new ArrayList<>(Arrays.asList(ingred5, ingred2, ingred6, ingred7, ingred9));
             ArrayList<Ingredient> ingredients5 = new ArrayList<>(Arrays.asList(ingred2, ingred3, ingred5, ingred7, ingred9));
-
-            addRecipe(0, new Recipe("ChickenRand", ingredients1), 1);
-            addRecipe(0, new Recipe("TurkeyBrand", ingredients2), 2);
-            addRecipe(0, new Recipe("Seasoned Milk", ingredients3), 3);
-            addRecipe(0, new Recipe("Spicy Milk", ingredients4), 4);
-            addRecipe(0, new Recipe("Spicy Turkey", ingredients4), 4);
+            ArrayList<Ingredient> spag = new ArrayList<>(Arrays.asList(pasta, sauce));
+            ArrayList<Ingredient> gb = new ArrayList<>(Arrays.asList(grbe, bull));
+            addRecipe(0, new Recipe("Alfredo", ingredients1), 1);
+            addRecipe(0, new Recipe("Pulled Pork", ingredients2), 2);
+            addRecipe(0, new Recipe("Sweet and Sour Chicken", ingredients3), 3);
+            addRecipe(0, new Recipe("Spaghetti", spag), 4);
+            addRecipe(0, new Recipe("Green Beans", gb), 4);
             makeSummaryRecipeIngredients();
         }
 

@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 public class EditCartFragment extends Fragment implements EditCartAdapter.CartClickListener  {
 
     RecyclerView rv;
-    Button but1;
     Button but2;
     EditCartAdapter adapter;
     ArrayList<CartItem> cartData;
@@ -56,17 +56,7 @@ public class EditCartFragment extends Fragment implements EditCartAdapter.CartCl
         rv.setAdapter(adapter);
 
         outputTextView = view.findViewById(R.id.text_RESULTTEST);
-
-        but1 = view.findViewById(R.id.button_EditCart1);
-        but1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //tring test = printCart(); //printCartTotalIngredients();
-                //outputTextView.setText(printCartTotalIngredients());
-                makeSummaryFromCartData();
-                outputTextView.setText(printCart());
-            }
-        });
+        outputTextView.setMovementMethod(new ScrollingMovementMethod());
         but2 = view.findViewById(R.id.button_EditCart2);
         but2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,9 +70,15 @@ public class EditCartFragment extends Fragment implements EditCartAdapter.CartCl
         });
         View sortBarHolder = view.findViewById(R.id.editcart_sortbarholder);
         SortBar editcartSortBar = new SortBar(sortBarHolder);
+
+        updateSummary();
+
         return view;
     }
-
+    private void updateSummary(){
+        makeSummaryFromCartData();
+        outputTextView.setText(printCart());
+    }
     private void makeSummaryFromCartData() {
         boolean Added = false;
         ingredientSummary = new ArrayList<>();
@@ -233,13 +229,18 @@ public class EditCartFragment extends Fragment implements EditCartAdapter.CartCl
     @Override
     public void minusQuantity(int layoutPosition) {
         cartData.get(layoutPosition).decrementQuant();
-        //adapter.notifyDataSetChanged();
+        updateSummary();
     }
 
     @Override
     public void plusQuantity(int layoutPosition) {
         cartData.get(layoutPosition).incrementQuant();
-        //adapter.notifyDataSetChanged();
+        updateSummary();
+    }
+
+    @Override
+    public void refresh() {
+        updateSummary();
     }
 
 }

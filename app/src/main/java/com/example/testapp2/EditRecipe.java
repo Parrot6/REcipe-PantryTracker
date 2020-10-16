@@ -59,6 +59,7 @@ public class EditRecipe extends AppCompatActivity implements AdapterView.OnItemS
     Recipe recipe;
     ImageView icon;
     Button getNutrition;
+    TextView nutritionAttribution;
     LinearLayout hideForNutrition;
 
     IngredientsAdapter adapter;
@@ -156,6 +157,9 @@ public class EditRecipe extends AppCompatActivity implements AdapterView.OnItemS
         nutritionResultRV.setVisibility(View.GONE);
 
         hideForNutrition = findViewById(R.id.layout_edit_recipe_toggleLayout);
+        nutritionAttribution = findViewById(R.id.text_nutrition_attribution);
+        nutritionAttribution.setVisibility(View.GONE);
+        
         getNutrition = findViewById(R.id.button_edit_recipe_getNutrition);
         Boolean Fetch = false;
         for(Ingredient ing : currentIngredients){
@@ -171,6 +175,7 @@ public class EditRecipe extends AppCompatActivity implements AdapterView.OnItemS
                 if(currentIngredients.size() == 0) return;
                 toggleView(hideForNutrition);
                 toggleView(nutritionResultRV);
+                toggleView(nutritionAttribution);
                 String state = getNutrition.getText().toString();
                 if(state.equals("View Nutrition")) {
                     getNutrition.setText("Back To Recipe");
@@ -223,6 +228,7 @@ public class EditRecipe extends AppCompatActivity implements AdapterView.OnItemS
                 Nutrition recipeSummary = null;
                 for (Ingredient ing :
                         currentIngredients) {
+                    if(ing.getNutrition() == null) continue;
                     if(recipeSummary == null) recipeSummary = Nutrition.newNutrition(ing.getNutrition());
                     else recipeSummary.getCombined(ing.getNutrition());
                 }

@@ -13,4 +13,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_pantryExpand">Other Types</string>
     <string name="nutritionButtonLoad">Get Nutrition</string>
+    <string name="powered_by_nutritionix_api">Powered by <a href="http://www.nutritionix.com/api">Nutritionix API</a></string>
 </resources>

@@ -38,9 +38,10 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/recipeListbg"
         android:paddingBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_EditCart1"
+        app:layout_constraintBottom_toTopOf="@+id/text_RESULTTEST"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editcart_sortbarholder">
@@ -48,35 +49,24 @@
     </androidx.recyclerview.widget.RecyclerView>
 
 
-    <Button
-        android:id="@+id/button_EditCart1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="2dp"
-        android:text="Make Shopping List"
-        app:layout_constraintBottom_toTopOf="@+id/text_RESULTTEST"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/text_RESULTTEST"
+        android:scrollbars = "vertical"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="@color/recipeListbg"
+        android:enabled="false"
         android:paddingLeft="4dp"
         android:paddingTop="4dp"
         android:paddingRight="4dp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/button_EditCart2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button

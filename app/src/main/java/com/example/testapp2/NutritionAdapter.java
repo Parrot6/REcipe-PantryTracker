@@ -27,7 +27,7 @@ public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.View
     private static ArrayList<viewState> currentState = new ArrayList<>();
     private LayoutInflater mInflater;
     Context context;
-
+    private static int cursorSpot = 0;
 
     // data is passed into the constructor
     public NutritionAdapter(Context context, ArrayList<Ingredient> data) {
@@ -198,209 +198,110 @@ public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.View
             servingSize = itemView.findViewById(R.id.text_nutrition_title_servingSize);
 
             et_calories = itemView.findViewById(R.id.et_nutrition_info_calories);
-            et_calories.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_calories.addTextChangedListener(new CustomTextWatcher(et_calories){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_calories.getTag() != null) {
-                            afterTextChangedMethod(et_calories, beforeValue, mData.get((Integer) et_calories.getTag()).getNutrition()::setKcal_calories);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_calories.getTag()).getNutrition()::setKcal_calories;
                 }
             });
-
             et_totalFat = itemView.findViewById(R.id.et_nutrition_info_totalFat);
-            et_totalFat.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_totalFat.addTextChangedListener(new CustomTextWatcher(et_totalFat){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_totalFat.getTag() != null) {
-                            afterTextChangedMethod(et_totalFat, beforeValue, mData.get((Integer) et_totalFat.getTag()).getNutrition()::setG_total_fat);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_totalFat.getTag()).getNutrition()::setG_total_fat;
                 }
             });
-
             et_cholesterol = itemView.findViewById(R.id.et_nutrition_info_cholesterol);
-            et_cholesterol.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_cholesterol.addTextChangedListener(new CustomTextWatcher(et_cholesterol){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_cholesterol.getTag() != null) {
-                            afterTextChangedMethod(et_cholesterol, beforeValue, mData.get((Integer) et_cholesterol.getTag()).getNutrition()::setMg_cholesterol);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_cholesterol.getTag()).getNutrition()::setMg_cholesterol;
                 }
             });
-
             et_sodium = itemView.findViewById(R.id.et_nutrition_info_sodium);
-            et_sodium.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_sodium.addTextChangedListener(new CustomTextWatcher(et_sodium){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_sodium.getTag() != null) {
-                            afterTextChangedMethod(et_sodium, beforeValue, mData.get((Integer) et_sodium.getTag()).getNutrition()::setMg_sodium);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_sodium.getTag()).getNutrition()::setMg_sodium;
                 }
             });
             et_totalCarbs = itemView.findViewById(R.id.et_nutrition_info_totalCarbs);
-            et_totalCarbs.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_totalCarbs.addTextChangedListener(new CustomTextWatcher(et_totalCarbs){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_totalCarbs.getTag() != null) {
-                            afterTextChangedMethod(et_totalCarbs, beforeValue, mData.get((Integer) et_totalCarbs.getTag()).getNutrition()::setG_total_carbohydrate);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_totalCarbs.getTag()).getNutrition()::setG_total_carbohydrate;
                 }
             });
             et_sugars = itemView.findViewById(R.id.et_nutrition_info_sugars);
-            et_sugars.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_sugars.addTextChangedListener(new CustomTextWatcher(et_sugars){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_sugars.getTag() != null) {
-                            afterTextChangedMethod(et_sugars, beforeValue, mData.get((Integer) et_sugars.getTag()).getNutrition()::setG_sugars);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_sugars.getTag()).getNutrition()::setG_sugars;
                 }
             });
             et_protein = itemView.findViewById(R.id.et_nutrition_info_protein);
-            et_protein.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_protein.addTextChangedListener(new CustomTextWatcher(et_protein){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_protein.getTag() != null) {
-                            afterTextChangedMethod(et_protein, beforeValue, mData.get((Integer) et_protein.getTag()).getNutrition()::setG_protein);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_protein.getTag()).getNutrition()::setG_protein;
                 }
             });
             et_servingWeight = itemView.findViewById(R.id.et_nutrition_info_servingWeight);
-            et_servingWeight.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_servingWeight.addTextChangedListener(new CustomTextWatcher(et_servingWeight){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_servingWeight.getTag() != null) {
-                            afterTextChangedMethod(et_servingWeight, beforeValue, mData.get((Integer) et_servingWeight.getTag()).getNutrition()::setG_serving_weight_grams);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_servingWeight.getTag()).getNutrition()::setG_serving_weight_grams;
                 }
             });
             et_servingSize = itemView.findViewById(R.id.et_nutrition_info_servingSize);
-            et_servingSize.addTextChangedListener(new TextWatcher() {
-                boolean ignoreRecursiveCalls = false;
-                String beforeValue;
+            et_servingSize.addTextChangedListener(new CustomTextWatcher(et_servingSize){
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    beforeValue = charSequence.toString();
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!ignoreRecursiveCalls) {
-                        ignoreRecursiveCalls = true;
-                        if (et_servingSize.getTag() != null) {
-                            afterTextChangedMethod(et_servingSize, beforeValue, mData.get((Integer) et_servingSize.getTag()).getNutrition()::setNf_serving_size_qty);
-                        }
-                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
-                    }
+                Nutrition.command mySetter() {
+                    return mData.get((Integer) et_servingSize.getTag()).getNutrition()::setNf_serving_size_qty;
                 }
             });
 
         }
-        private void afterTextChangedMethod(EditText et, String beforeValue, Nutrition.command setter){
+        private class CustomTextWatcher implements TextWatcher {
+            private EditText et;
+            boolean ignoreRecursiveCalls = false;
+            String beforeValue;
+
+            CustomTextWatcher(EditText et){
+                this.et = et;
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                beforeValue = charSequence.toString();
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(et.hasFocus()) {
+                    if (!ignoreRecursiveCalls) {
+                        ignoreRecursiveCalls = true;
+                        cursorSpot = i + i2;
+                        Log.e("update cursor Pos:", String.valueOf(cursorSpot));
+                        if (et.getTag() != null) {
+                            afterTextChangedMethod(et, beforeValue, mySetter());
+                        }
+
+                        /*if(et_servingSize.hasFocus()) */
+                        ignoreRecursiveCalls = false; //any calls between flags will not make it into here
+                        //et_servingSize.setSelection(Math.min(cursorSpot, charSequence.toString().length()));
+                        //Log.e("set cursor Pos yo:", String.valueOf(Math.min(cursorSpot, charSequence.toString().length())));
+                    }
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                et.setSelection(Math.min(cursorSpot, editable.toString().length()));
+
+            }
+            Nutrition.command mySetter() {
+                return null;
+            }
+        }
+        public void afterTextChangedMethod(EditText et, String beforeValue, Nutrition.command setter){
                 if (!et.hasFocus()) return; //stop setText from triggering loop
                 if (scaleAll.isChecked()) {
                     if (beforeValue.equals(et.getText().toString())) {
@@ -411,7 +312,7 @@ public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.View
                     if (before != 0.0)
                         differenceMultiplier = Double.parseDouble(et.getText().toString()) / before;
                     if (differenceMultiplier > 0.00001 && differenceMultiplier != 1.0) {
-                        //mData.get((Integer) et_calories.getTag()).getNutrition().setKcal_calories(before); //revert to original value and then scale all values
+                        setter.set(Double.parseDouble(beforeValue)); //revert to original value and then scale all values
                         scaleAll(mData.get((Integer) et.getTag()).getNutrition(), differenceMultiplier, (Integer) et.getTag());
                     }
                 } else
@@ -440,6 +341,7 @@ public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.View
 
         }
     }
+
     private class viewState{
         public boolean isExpanded = false;
         public boolean isScaleAllChecked = false;

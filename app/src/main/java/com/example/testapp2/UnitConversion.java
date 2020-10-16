@@ -30,9 +30,43 @@ public class UnitConversion implements Serializable
         return quantity;
     }
 
+    public boolean hasConversion(String original, String name){
+        boolean first = false;
+        for (UnitConversion uc:equalTo
+        ) {
+            for (String s :
+                    uc.getNames()) {
+                if(name.toLowerCase().contains(s.toLowerCase())) first = true;
+            }
+        }
+        if(first){
+            for (String s : names
+            ) {
+                    if(original.toLowerCase().contains(s.toLowerCase())) return true;
+            }
+        }
+        //reversed order
+        first = false;
+        for (String s : names
+        ) {
+            if(name.toLowerCase().contains(s.toLowerCase())) first = true;
+        }
+        if(first) {
+            for (UnitConversion uc : equalTo
+            ) {
+                for (String s :
+                        uc.getNames()) {
+                    if (original.toLowerCase().contains(s.toLowerCase())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public boolean hasConversion(String name){
         for (UnitConversion uc:equalTo
-             ) {
+        ) {
             for (String s :
                     uc.getNames()) {
                 if(name.toLowerCase().contains(s.toLowerCase())) return true;
@@ -50,12 +84,19 @@ public class UnitConversion implements Serializable
         }
         return null;
     }
-    public Double getConversionMulti(String name){
-        if(hasConversion(name)) {
-            Double temp = getConversion(name).getQuantity();
-            return (temp/quantity);
+    private UnitConversion getOppositeConversion(String name){
+        for (UnitConversion uc:equalTo
+        ) {
+            for (String s :
+                    uc.getNames()) {
+                if(name.toLowerCase().contains(s.toLowerCase())) return uc;
+            }
         }
         return null;
+    }
+    public Double getConversionMulti(String name){
+        Double temp = getConversion(name).getQuantity();
+        return (temp / quantity);
     }
     public UnitConversion addEquivUnitConversion(UnitConversion newEquals){
         equalTo.add(newEquals);
@@ -68,5 +109,6 @@ public class UnitConversion implements Serializable
     public void addVariantNames(String str){
         names.add(str);
     }
+
 
 }

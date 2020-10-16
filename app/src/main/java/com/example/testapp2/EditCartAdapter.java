@@ -170,7 +170,7 @@ public class EditCartAdapter extends RecyclerView.Adapter<EditCartAdapter.ViewHo
             }else d = Integer.parseInt(charSequence.toString());
             if(d < 0) d = 0;
             mData.get(position).setQuantity(d);
-
+            mOnClickListener.refresh();
         }
 
         @Override
@@ -183,5 +183,6 @@ public class EditCartAdapter extends RecyclerView.Adapter<EditCartAdapter.ViewHo
     public interface CartClickListener {
         void minusQuantity(int layoutPosition);
         void plusQuantity(int layoutPosition);
+        void refresh();
     }
 }

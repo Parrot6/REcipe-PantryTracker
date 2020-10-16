@@ -195,20 +195,24 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="75dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollview">
 
         <TextView
-            android:id="@+id/text_edit_text_RecipeNutritionSummary"
+            android:id="@+id/text_nutrition_attribution"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:gravity="center_horizontal"
+            android:text="@string/powered_by_nutritionix_api"
+            android:textColor="#353535"
+            android:textSize="10sp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/button_edit_recipe_getNutrition" />
 
         <TextView
             android:id="@+id/text_edit_text__NutritionTitle"
@@ -232,14 +236,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_edit_text__NutritionTitle" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_nutrition_info"
+        <ScrollView
+            android:id="@+id/scroller"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_edit_recipe_getNutrition" />
+            app:layout_constraintTop_toBottomOf="@+id/text_nutrition_attribution">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_nutrition_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
