@@ -1,6 +1,7 @@
 # REcipe-PantryTracker
 Create and categorize recipes, automatically fetch nutrition details. Make a shopping list based on recipes with pantry stock considered. Update your pantry to see which recipes you can make.
 ![Screenshot_2020-10-16-11-03-37-201_com example testapp2](https://user-images.githubusercontent.com/32090723/96275727-11a2d480-0fa0-11eb-8e76-ded8afa2aea6.jpg)
+![Screenshot_2020-10-16-11-43-13-724_com example testapp2](https://user-images.githubusercontent.com/32090723/96279604-e373c380-0fa4-11eb-9445-a7bf216aa876.jpg)
 ![Screenshot_2020-10-16-11-03-56-535_com example testapp2](https://user-images.githubusercontent.com/32090723/96275729-123b6b00-0fa0-11eb-8559-5e7436e29ec6.jpg)
 ![Screenshot_2020-10-16-11-04-07-347_com example testapp2](https://user-images.githubusercontent.com/32090723/96275730-123b6b00-0fa0-11eb-9eaa-3e1e1acfc1be.jpg)
 ![Screenshot_2020-10-16-11-04-29-636_com example testapp2](https://user-images.githubusercontent.com/32090723/96275731-12d40180-0fa0-11eb-9ad8-b13fb8f041e2.jpg)
